@@ -49,8 +49,63 @@ html {
 }
 
 .main-column {
+    position: relative;        /* anchor point for the dangling image */
     flex: 1;
     min-width: 0;              /* stops wide content from pushing the layout out */
+}
+
+/* ---------- floating dangling image ---------- */
+.dangling-image.jerseydevil {
+    position: absolute;
+    top: 36%;                                  /* sits right at the seam below the main box */
+    left: 103%;
+    transform: translate(-50%, -50%);        /* centers it and straddles the edge */
+    z-index: 12;
+    pointer-events: none;                    /* lets clicks pass through to what's underneath */
+}
+.dangling-image.jerseydevil img {
+    width: 100px;
+    display: block;
+    transform-origin: bottom center;
+    animation: swing 3s ease-in-out infinite;
+}
+
+.dangling-image.mothman {
+    position: absolute;
+    top: 61%;                                  /* sits right at the seam below the main box */
+    left: -2%;
+    transform: translate(-50%, -50%);        /* centers it and straddles the edge */
+    z-index: 12;
+    pointer-events: none;                    /* lets clicks pass through to what's underneath */
+}
+
+.dangling-image.mothman img {
+    width: 120px;
+    display: block;
+    transform-origin: bottom center;
+    animation: swing 3s ease-in-out infinite;
+}
+
+.dangling-image.flatwoodsmonster {
+    position: absolute;
+    top: 96%;                                  /* sits right at the seam below the main box */
+    left: 103%;
+    transform: translate(-50%, -50%);        /* centers it and straddles the edge */
+    z-index: 12;
+    pointer-events: none;                     
+}
+
+.dangling-image.flatwoodsmonster img {
+    width: 120px;
+    display: block;
+    transform-origin: bottom center;
+    animation: swing 3s ease-in-out infinite;
+}
+
+@keyframes swing {
+    0%   { transform: rotate(-10deg); }
+    50%  { transform: rotate(10deg); }
+    100% { transform: rotate(-10deg); }
 }
 
 /* ---------- reusable window ---------- */
@@ -87,6 +142,7 @@ html {
     flex-shrink: 0;
     position: sticky;          /* stays in view as the whole right column scrolls */
     top: 40px;
+    z-index: 1000;
 }
 
 .side-links { list-style: none; margin: 0; padding: 0; }
@@ -105,6 +161,7 @@ html {
 
 /* ---------- main box ---------- */
 .container {
+    position: relative;
     width: 100%;
 }
 
@@ -118,7 +175,12 @@ html {
 .section { margin-bottom: 24px; }
 .section:last-child { margin-bottom: 0; }
 
-.card { display: block; text-decoration: none; color: inherit; }
+.card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
 .card img {
     display: block;
     width: 100%;
@@ -152,6 +214,7 @@ html {
 
 /* ---------- second box ---------- */
 .second-container {
+    position: relative;
     width: 100%;
     margin-top: 24px;
 }
@@ -168,39 +231,13 @@ html {
     transition: color 0.5s ease;
 }
 
-/* ---------- inner dotted border: main box only ---------- */
-.container {
-    position: relative;
-}
-
-.container::after {
-    content: "";
-    position: absolute;
-    inset: 6px;
-    border: 3px dotted  #efd0d0;
-    border-radius: 6px;
-    pointer-events: none;
-}
-
-.second-container {
-    position: relative;
-}
-
+/* ---------- inner dotted border: main box and second box only ---------- */
+.container::after,
 .second-container::after {
     content: "";
     position: absolute;
     inset: 6px;
-    border: 3px dotted  #efd0d0;
+    border: 3px dotted #efd0d0;
     border-radius: 6px;
     pointer-events: none;
-}
-
-/* ---------- shifting dotted border ---------- */
-@keyframes border-shift {
-    0%   { border-color: #000000; }
-    20%  { border-color: #FFB002; }
-    40%  { border-color: #FD6809; }
-    60%  { border-color: #85BA0A; }
-    80%  { border-color: #01AAFB; }
-    100% { border-color: #F777D7; }   /* loops back to the first color smoothly */
 }
