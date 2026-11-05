@@ -13,6 +13,9 @@ body {
     align-items: center;
     padding: 0;
 }
+html {
+    scroll-behavior: smooth;
+}
 
 .logo {
     text-align: center;
@@ -26,13 +29,9 @@ body {
 }
 
 .gif-ad {
-    width: 90%;
-    max-width: 1100px;
     display: flex;
     justify-content: center;
     margin: 20px 0 30px;
-    padding-left: 224px; /* sidebar 200 + gap 24 */
-    box-sizing: border-box;
 }
 
 .gif-ad img {
@@ -40,20 +39,26 @@ body {
     max-width: 90%;
 }
 
-/* sidebar on the left, main box on the right */
+/* sidebar on the left, everything else stacked on the right */
 .layout {
     display: flex;
     gap: 24px;
-    align-items: flex-start;   /* each box is only as tall as its content */
+    align-items: flex-start;   /* sidebar height follows its own content, not the whole page */
     width: 90%;
     max-width: 1100px;
 }
 
+.main-column {
+    flex: 1;
+    min-width: 0;              /* stops wide content from pushing the layout out */
+}
+
 /* ---------- reusable window ---------- */
 .window {
+    position: relative;
     border: 1px solid #2a1c1c;
-    border-radius: 10px;       /* change this to round more or less */
-    overflow: hidden;          /* keeps the bar inside the rounded corners */
+    border-radius: 10px;
+    overflow: hidden;
     background-color: #513737;
     color: #eee;
     text-align: left;
@@ -66,8 +71,9 @@ body {
 }
 
 .window-bar h2 {
-    margin: 0;
     font-size: 20px;
+    margin: 0;
+    color: #d9a441;
 }
 
 .window-body { padding: 16px; }
@@ -79,7 +85,7 @@ body {
 .sidebar {
     width: 200px;
     flex-shrink: 0;
-    position: sticky;          /* stays in view while the page scrolls */
+    position: sticky;          /* stays in view as the whole right column scrolls */
     top: 40px;
 }
 
@@ -95,12 +101,11 @@ body {
 
 .side-links li:last-child a { border-bottom: 0; }
 .side-links a:hover { background-color: #3a2626; color: #d9a441; }
-.side-links a.active { background-color: #3a2626; }   /* marks the current page */
+.side-links a.active { background-color: #3a2626; }
 
 /* ---------- main box ---------- */
 .container {
-    flex: 1;
-    min-width: 0;              /* stops wide content from pushing the box out */
+    width: 100%;
 }
 
 .page-title {
@@ -128,7 +133,6 @@ body {
 .cotd .card { max-width: 400px; }
 .cotd .window-bar h2 { font-size: 40px; }
 
-
 /* ---------- section 2: boards ---------- */
 .board-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; }
 .board-list a { color: inherit; }
@@ -143,16 +147,60 @@ body {
 .centered .window-bar,
 .centered .window-body { text-align: center; }
 
-.centered .card { margin-left: auto; margin-right: auto; }  /* centers the picture box */
-.centered .board-list { justify-content: center; }          /* centers the board links */
+.centered .card { margin-left: auto; margin-right: auto; }
+.centered .board-list { justify-content: center; }
+
+/* ---------- second box ---------- */
+.second-container {
+    width: 100%;
+    margin-top: 24px;
+}
+
+.window-body p { font-size: 18px; line-height: 1.2; margin-top: 0; color: #efd0d0; }
 
 /* ---------- small screens: sidebar goes on top ---------- */
 @media (max-width: 700px) {
     .layout { flex-direction: column; }
     .sidebar { width: 100%; position: static; }
-    .container { width: 100%; }
 }
 
 .rgb-letter {
     transition: color 0.5s ease;
+}
+
+/* ---------- inner dotted border: main box only ---------- */
+.container {
+    position: relative;
+}
+
+.container::after {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 3px dotted  #efd0d0;
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+.second-container {
+    position: relative;
+}
+
+.second-container::after {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 3px dotted  #efd0d0;
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+/* ---------- shifting dotted border ---------- */
+@keyframes border-shift {
+    0%   { border-color: #000000; }
+    20%  { border-color: #FFB002; }
+    40%  { border-color: #FD6809; }
+    60%  { border-color: #85BA0A; }
+    80%  { border-color: #01AAFB; }
+    100% { border-color: #F777D7; }   /* loops back to the first color smoothly */
 }
