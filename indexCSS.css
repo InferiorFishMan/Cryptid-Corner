@@ -78,7 +78,6 @@ html {
     z-index: 12;
     pointer-events: none;                    /* lets clicks pass through to what's underneath */
 }
-
 .dangling-image.mothman img {
     width: 120px;
     display: block;
@@ -88,19 +87,69 @@ html {
 
 .dangling-image.flatwoodsmonster {
     position: absolute;
-    top: 96%;                                  /* sits right at the seam below the main box */
+    top: 95%;                                  /* sits right at the seam below the main box */
     left: 103%;
     transform: translate(-50%, -50%);        /* centers it and straddles the edge */
     z-index: 12;
     pointer-events: none;                     
 }
-
 .dangling-image.flatwoodsmonster img {
     width: 120px;
     display: block;
     transform-origin: bottom center;
     animation: swing 3s ease-in-out infinite;
 }
+
+.dangling-image.confetti {
+    position: absolute;
+    top: 11%;                                  /* sits right at the seam below the main box */
+    left: 74%;
+    transform: translate(-50%, -50%);        /* centers it and straddles the edge */
+    z-index: 12;
+    pointer-events: none;                     
+}
+.dangling-image.confetti img {
+    width: 190px;
+    display: block;
+}
+.dangling-image.confetti2 {
+    position: absolute;
+    top: 19%;                                  /* sits right at the seam below the main box */
+    left: 74%;
+    transform: translate(-50%, -50%);        /* centers it and straddles the edge */
+    z-index: 12;
+    pointer-events: none;                     
+}
+.dangling-image.confetti2 img {
+    width: 190px;
+    display: block;
+}
+
+.dangling-image.confetti3 {
+    position: absolute;
+    top: 11%;                                  /* sits right at the seam below the main box */
+    left: 28%;
+    transform: translate(-50%, -50%);        /* centers it and straddles the edge */
+    z-index: 12;
+    pointer-events: none;                     
+}
+.dangling-image.confetti3 img {
+    width: 190px;
+    display: block;
+}
+.dangling-image.confetti4 {
+    position: absolute;
+    top: 19%;                                  /* sits right at the seam below the main box */
+    left: 28%;
+    transform: translate(-50%, -50%);        /* centers it and straddles the edge */
+    z-index: 12;
+    pointer-events: none;                     
+}
+.dangling-image.confetti4 img {
+    width: 190px;
+    display: block;
+}
+
 
 @keyframes swing {
     0%   { transform: rotate(-10deg); }
@@ -111,13 +160,14 @@ html {
 /* ---------- reusable window ---------- */
 .window {
     position: relative;
-    border: 1px solid #2a1c1c;
     border-radius: 10px;
     overflow: hidden;
-    background-color: #513737;
+    background-color: #462f2f;
     color: #eee;
     text-align: left;
 }
+.container .window {border: 1px solid #d9a441; }  /* main box windows have light text */
+.second-container .window {border: 1px solid #d9a441; }
 
 .window-bar {
     padding: 8px 14px;
@@ -217,9 +267,14 @@ html {
     position: relative;
     width: 100%;
     margin-top: 24px;
+    margin-bottom: 24px;
 }
 
+.second-container .page-title { color: #ffffff; }
 .window-body p { font-size: 18px; line-height: 1.2; margin-top: 0; color: #efd0d0; }
+.window-body p a { color: #d9a441; text-decoration: underline; }
+.second.window{ background-color: #462f2f; }
+.second.second-container .window-bar h2 { color: #d9a441; }
 
 /* ---------- small screens: sidebar goes on top ---------- */
 @media (max-width: 700px) {
