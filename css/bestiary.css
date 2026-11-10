@@ -1,0 +1,161 @@
+/* =====================================================================
+   BESTIARY STYLES (bestiary.html + cryptid.html)
+   Loaded after css/style.css, so it reuses the same windows, colours
+   and layout, and only adds what the bestiary needs.
+   ===================================================================== */
+
+/* ---------- bestiary list: search bar ---------- */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    align-items: center;
+}
+.filter-bar label { font-weight: bold; color: #d9a441; }
+.filter-bar input {
+    flex: 1 1 240px;
+    font: inherit;
+    font-size: 17px;
+    padding: 8px 10px;
+    border: 1px solid #d9a441;
+    border-radius: 6px;
+    background-color: #2a1c1c;
+    color: #eee;
+}
+.filter-bar input::placeholder { color: #b9a3a3; }
+
+.window-body .result-count { margin: 10px 0 0; font-size: 15px; color: #c9b3b3; }
+.window-body .search-hint  { margin: 6px 0 0; font-size: 15px; }
+.window-body .empty-state  { margin: 0; text-align: center; }
+
+/* ---------- bestiary list: cards ---------- */
+.bestiary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+}
+.bestiary-card {
+    padding: 10px;
+    text-align: center;
+    background-color: #462f2f;
+    border: 1px solid #d9a441;
+    border-radius: 8px;
+}
+.bestiary-card:hover { border-color: #fff; }
+.bestiary-card img {
+    aspect-ratio: 1;
+    object-fit: contain;       /* show the whole creature, no stretching */
+    border-radius: 6px;
+}
+.bestiary-card .bestiary-name   { font-size: 18px; font-weight: bold; text-decoration: none; }
+.bestiary-card .bestiary-region { margin-top: 2px; font-size: 14px; color: #c9b3b3; text-decoration: none; }
+
+/* ---------- entry: title + at a glance ---------- */
+.window-body .entry-aliases {
+    margin: -14px 0 24px;
+    text-align: center;
+    font-style: italic;
+}
+.entry-glance {
+    display: grid;
+    grid-template-columns: minmax(0, 260px) 1fr;
+    gap: 20px;
+    align-items: start;
+}
+.entry-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    background-color: #2a1c1c;
+    border: 1px solid #d9a441;
+    border-radius: 8px;
+}
+.entry-facts { margin: 0; display: grid; gap: 14px; }
+.entry-facts dt {
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #d9a441;
+}
+.entry-facts dd { margin: 2px 0 0; font-size: 18px; color: #efd0d0; }
+
+/* evidence strength boxes */
+.meter { display: inline-flex; gap: 3px; margin-right: 8px; vertical-align: -1px; }
+.meter span { width: 14px; height: 14px; border: 1px solid #d9a441; }
+.meter span.filled { background-color: #d9a441; }
+
+/* ---------- entry: text lists ---------- */
+.entry-subhead { margin: 18px 0 6px; font-size: 16px; color: #d9a441; }
+.entry-list {
+    margin: 0;
+    padding-left: 22px;
+    font-size: 17px;
+    line-height: 1.4;
+    color: #efd0d0;
+}
+.entry-list li + li { margin-top: 6px; }
+.entry-list .muted  { color: #b9a3a3; font-style: italic; }
+
+/* ---------- entry: claims with Folklore / Sighting / Evidence tags ---------- */
+.window-body .claim-key { font-size: 15px; line-height: 2; }
+
+.claim-tag {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.6;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #1b1111;
+}
+.claim-tag[data-type="folklore"] { background-color: #c9a7ff; }
+.claim-tag[data-type="sighting"] { background-color: #d9a441; }
+.claim-tag[data-type="evidence"] { background-color: #8fd18f; }
+
+.claim-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.claim-list li {
+    padding: 10px 12px;
+    border-left: 4px solid;
+    border-radius: 4px;
+    background-color: #462f2f;
+    font-size: 17px;
+    line-height: 1.4;
+    color: #efd0d0;
+}
+.claim-list li[data-type="folklore"] { border-left-color: #c9a7ff; }
+.claim-list li[data-type="sighting"] { border-left-color: #d9a441; }
+.claim-list li[data-type="evidence"] { border-left-color: #8fd18f; }
+.claim-year { margin: 0 8px; font-weight: bold; color: #fff; }
+
+/* ---------- entry: related gear ---------- */
+.product-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.product-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    font-size: 17px;
+    color: #efd0d0;
+}
+.product-list a { font-weight: bold; color: #d9a441; }
+.product-tag {
+    padding: 0 8px;
+    border: 1px solid #c9b3b3;
+    border-radius: 999px;
+    font-size: 12px;
+    color: #c9b3b3;
+}
+.product-tag.is-affiliate { border-color: #ffb3b3; color: #ffb3b3; }
+.product-note { font-size: 15px; color: #c9b3b3; }
+
+.window-body .entry-back { margin: 0; text-align: center; }
+
+/* ---------- small screens: picture above the facts ---------- */
+@media (max-width: 600px) {
+    .entry-glance { grid-template-columns: 1fr; }
+    .entry-image  { max-width: 280px; margin: 0 auto; }
+}

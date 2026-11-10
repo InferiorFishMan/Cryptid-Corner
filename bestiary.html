@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bestiary – Cryptid Corner</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/bestiary.css">
+</head>
+<body>
+
+  <!-- Logo Box (links back home) -->
+  <div class="logo">
+    <a href="index.html"><img src="assets/CryptidCornerLogo.pixel-4bitcrip.png" alt="Cryptid Corner home"></a>
+  </div>
+
+  <div class="layout">
+
+    <!-- ===== SIDEBAR (same on every page) ===== -->
+    <nav class="sidebar window" aria-label="Main menu">
+      <div class="window-bar"><h2>Menu</h2></div>
+      <form class="side-search" action="bestiary.html" method="get" role="search">
+        <label for="site-search" class="visually-hidden">Search cryptids or places</label>
+        <input id="site-search" type="search" name="q" placeholder="Cryptid or place…">
+        <button type="submit">Go</button>
+      </form>
+      <ul class="side-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#">Map</a></li>
+        <li><a class="active" aria-current="page" href="bestiary.html">Bestiary</a></li>
+        <li><a href="#">Community</a></li>
+        <li><a href="#">Shop</a></li>
+      </ul>
+      <ul class="side-links side-links--minor">
+        <li><a href="index.html#info">About Us</a></li>
+      </ul>
+    </nav>
+
+    <div class="main-column">
+      <main class="container window">
+        <div class="window-body">
+
+          <h1 class="page-title">Bestiary</h1>
+
+          <!-- SEARCH -->
+          <section class="section window">
+            <div class="window-bar"><h2>Find a cryptid</h2></div>
+            <div class="window-body">
+              <form class="filter-bar" role="search" onsubmit="return false">
+                <label for="bestiary-search">Name or place</label>
+                <input id="bestiary-search" type="search" name="q" placeholder="e.g. mothman, Ohio, frog…" autocomplete="off">
+              </form>
+              <p id="bestiary-count" class="result-count" aria-live="polite"></p>
+              <p id="bestiary-hint" class="search-hint" hidden>
+                Searching by your location is coming with the Map. For now, try a state or country, like <em>West Virginia</em>.
+              </p>
+            </div>
+          </section>
+
+          <!-- RESULTS: cards are added by js/bestiary.js from js/cryptids.js -->
+          <section class="section window">
+            <div class="window-bar"><h2>All cryptids</h2></div>
+            <div class="window-body">
+              <div id="bestiary-grid" class="bestiary-grid"></div>
+              <p id="bestiary-empty" class="empty-state" hidden>
+                No cryptids match that search. Maybe it's still undiscovered…
+              </p>
+              <noscript><p>Please turn on JavaScript to see the bestiary.</p></noscript>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+
+  </div>
+
+  <!-- ===== Java Scripts ===== -->
+  <script src="js/cryptids.js"></script>
+  <script src="js/bestiary.js"></script>
+
+</body>
+</html>

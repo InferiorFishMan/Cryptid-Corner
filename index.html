@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cryptid Corner</title>
+  <link rel="icon" type="image/x-icon" href="assets/logoCryptidCorner.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -15,16 +16,24 @@
 
   <div class="layout">
 
-    <!-- ===== SIDEBAR: one <li> per link, copy a line to add one ===== -->
-    <nav class="sidebar window">
+    <!-- ===== SIDEBAR: search first, then the 4 main sections =====
+         This same menu is copied on every page; if you change it, change it everywhere. -->
+    <nav class="sidebar window" aria-label="Main menu">
       <div class="window-bar"><h2>Menu</h2></div>
+      <form class="side-search" action="bestiary.html" method="get" role="search">
+        <label for="site-search" class="visually-hidden">Search cryptids or places</label>
+        <input id="site-search" type="search" name="q" placeholder="Cryptid or place…">
+        <button type="submit">Go</button>
+      </form>
       <ul class="side-links">
-        <li><a class="#" href="#">Home</a></li>
-        <li><a href="#info">About Us</a></li>
-        <li><a href="#">Boards</a></li>
-        <li><a href="#">Bestiary</a></li>
+        <li><a class="active" aria-current="page" href="index.html">Home</a></li>
         <li><a href="#">Map</a></li>
-        <li><a href="#">Store</a></li>
+        <li><a href="bestiary.html">Bestiary</a></li>
+        <li><a href="#">Community</a></li>
+        <li><a href="#">Shop</a></li>
+      </ul>
+      <ul class="side-links side-links--minor">
+        <li><a href="#info">About Us</a></li>
       </ul>
     </nav>
 
@@ -43,7 +52,7 @@
               <h2 class="rgb-text">Cryptid of the Day</h2>
             </div>
             <div class="window-body">
-              <a class="card" href="#">
+              <a class="card" href="cryptid.html?id=loveland-frog">
                 <img src="assets/Fa77soNXgAAoTNH.pixel-4bit.png" alt="Cryptid of the day">
                 <span>Loveland frog</span>
               </a>

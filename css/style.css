@@ -1,11 +1,10 @@
 /* ---------- page ---------- */
 body {
     background-image: url('../assets/pexels-raulling-34169628.pixel-8bit.png');
-    background-color: #111;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-color: #787878;
+     background-repeat: no-repeat;
     background-attachment: fixed;
+    background-size: cover;
     margin: 0;
     min-height: 100vh;
     display: flex;
@@ -295,4 +294,55 @@ html {
     border: 3px dotted #efd0d0;
     border-radius: 6px;
     pointer-events: none;
+}
+/* ---------- sidebar search ---------- */
+.side-search {
+    display: flex;
+    gap: 6px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #3a2626;
+}
+.side-search input,
+.side-search button {
+    font: inherit;
+    font-size: 15px;
+    padding: 6px 8px;
+    border: 1px solid #d9a441;
+    border-radius: 6px;
+}
+.side-search input {
+    flex: 1;
+    min-width: 0;              /* lets the box shrink inside the 200px sidebar */
+    background-color: #2a1c1c;
+    color: #eee;
+}
+.side-search input::placeholder { color: #b9a3a3; }
+.side-search button {
+    background-color: #3a2626;
+    color: #d9a441;
+    cursor: pointer;
+}
+.side-search button:hover { background-color: #d9a441; color: #2a1c1c; }
+
+/* secondary links (About Us) sit under the main sections, smaller */
+.side-links--minor { border-top: 3px double #3a2626; }
+.side-links--minor a { font-size: 14px; color: #c9b3b3; }
+
+/* visible keyboard focus everywhere */
+a:focus-visible,
+input:focus-visible,
+button:focus-visible {
+    outline: 2px solid #d9a441;
+    outline-offset: 2px;
+}
+
+/* hides text visually but keeps it for screen readers */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }

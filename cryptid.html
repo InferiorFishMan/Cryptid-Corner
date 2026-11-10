@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bestiary – Cryptid Corner</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/bestiary.css">
+</head>
+<body>
+
+  <!-- Logo Box (links back home) -->
+  <div class="logo">
+    <a href="index.html"><img src="assets/CryptidCornerLogo.pixel-4bitcrip.png" alt="Cryptid Corner home"></a>
+  </div>
+
+  <div class="layout">
+
+    <!-- ===== SIDEBAR (same on every page) ===== -->
+    <nav class="sidebar window" aria-label="Main menu">
+      <div class="window-bar"><h2>Menu</h2></div>
+      <form class="side-search" action="bestiary.html" method="get" role="search">
+        <label for="site-search" class="visually-hidden">Search cryptids or places</label>
+        <input id="site-search" type="search" name="q" placeholder="Cryptid or place…">
+        <button type="submit">Go</button>
+      </form>
+      <ul class="side-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#">Map</a></li>
+        <li><a class="active" href="bestiary.html">Bestiary</a></li>
+        <li><a href="#">Community</a></li>
+        <li><a href="#">Shop</a></li>
+      </ul>
+      <ul class="side-links side-links--minor">
+        <li><a href="index.html#info">About Us</a></li>
+      </ul>
+    </nav>
+
+    <div class="main-column">
+      <main class="container window">
+        <div class="window-body">
+
+          <!-- =================================================================
+               BESTIARY ENTRY TEMPLATE
+               Every cryptid uses this same layout. js/cryptid.js finds the
+               cryptid from ?id= in the URL and fills each data-field="..."
+               slot with that field from js/cryptids.js.
+               ================================================================= -->
+          <article id="entry" hidden>
+
+            <h1 class="page-title" data-field="name"></h1>
+            <p class="entry-aliases">Also known as: <span data-field="aliases"></span></p>
+
+            <!-- AT A GLANCE -->
+            <section class="section window">
+              <div class="window-bar"><h2>At a glance</h2></div>
+              <div class="window-body entry-glance">
+                <img class="entry-image" data-field="image" src="" alt="">
+                <dl class="entry-facts">
+                  <div><dt>Region</dt><dd data-field="region"></dd></div>
+                  <div><dt>Culture of origin</dt><dd data-field="culture"></dd></div>
+                  <div><dt>First reported</dt><dd data-field="firstReported"></dd></div>
+                  <div><dt>Evidence strength</dt><dd data-field="evidenceStrength"></dd></div>
+                </dl>
+              </div>
+            </section>
+
+            <!-- DESCRIPTION -->
+            <section class="section window">
+              <div class="window-bar"><h2>Description</h2></div>
+              <div class="window-body">
+                <p data-field="description"></p>
+              </div>
+            </section>
+
+            <!-- ORIGIN & FOLKLORE -->
+            <section class="section window">
+              <div class="window-bar"><h2>Origin &amp; folklore</h2></div>
+              <div class="window-body">
+                <p data-field="origin"></p>
+                <h3 class="entry-subhead">Sources</h3>
+                <ul class="entry-list" data-field="sources"></ul>
+              </div>
+            </section>
+
+            <!-- SIGHTINGS & CLAIMS -->
+            <section class="section window">
+              <div class="window-bar"><h2>Sightings &amp; claims</h2></div>
+              <div class="window-body">
+                <p class="claim-key">
+                  <span class="claim-tag" data-type="folklore">Folklore</span> a story or legend
+                  <span class="claim-tag" data-type="sighting">Sighting</span> someone reported seeing it
+                  <span class="claim-tag" data-type="evidence">Evidence</span> photos, tracks or remains
+                </p>
+                <ol class="claim-list" data-field="claims"></ol>
+              </div>
+            </section>
+
+            <!-- POSSIBLE EXPLANATIONS -->
+            <section class="section window">
+              <div class="window-bar"><h2>Possible explanations</h2></div>
+              <div class="window-body">
+                <ul class="entry-list" data-field="explanations"></ul>
+              </div>
+            </section>
+
+            <!-- DISCUSSION -->
+            <section class="section window">
+              <div class="window-bar"><h2>Discussion</h2></div>
+              <div class="window-body">
+                <p>Seen something? Think it's just an owl? Talk it over on the <a data-field="board" href="#"></a> board.</p>
+              </div>
+            </section>
+
+            <!-- RELATED GEAR (kept last, so the shop never takes over) -->
+            <section class="section window">
+              <div class="window-bar"><h2>Related gear</h2></div>
+              <div class="window-body">
+                <ul class="product-list" data-field="products"></ul>
+              </div>
+            </section>
+
+            <p class="entry-back"><a href="bestiary.html">← Back to the Bestiary</a></p>
+          </article>
+
+          <!-- Shown when the ?id= doesn't match any cryptid -->
+          <section id="not-found" class="section window" hidden>
+            <div class="window-bar"><h2>Cryptid not found</h2></div>
+            <div class="window-body">
+              <p>This cryptid has escaped our records. <a href="bestiary.html">Browse the Bestiary</a> instead.</p>
+            </div>
+          </section>
+
+          <noscript><p>Please turn on JavaScript to see this bestiary entry.</p></noscript>
+
+        </div>
+      </main>
+    </div>
+
+  </div>
+
+  <!-- ===== Java Scripts ===== -->
+  <script src="js/cryptids.js"></script>
+  <script src="js/cryptid.js"></script>
+
+</body>
+</html>
