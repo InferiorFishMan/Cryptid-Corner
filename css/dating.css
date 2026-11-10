@@ -88,24 +88,6 @@ table.layout{width:100%;border-collapse:collapse}
   font-family:inherit;font-weight:bold;cursor:pointer;
 }
 
-.gif-ad {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0 30px;
-}
-
-.gif-ad a{
-    display:block;
-}
-
-.gif-ad img {
-    width: 900px;
-    max-width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    transition: transform 0 200px;
-}
-
 .guestbook button:active{border-style:inset}
 .footer{text-align:center;font-size:12px;padding:14px 0;color:#fff}
 hr{border:0;border-top:3px dashed #ff00ff}
