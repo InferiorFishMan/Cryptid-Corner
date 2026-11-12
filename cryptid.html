@@ -27,7 +27,7 @@
       </form>
       <ul class="side-links">
         <li><a href="index.html">Home</a></li>
-        <li><a href="#">Map</a></li>
+        <li><a href="map.html">Map</a></li>
         <li><a class="active" href="bestiary.html">Bestiary</a></li>
         <li><a href="#">Community</a></li>
         <li><a href="#">Shop</a></li>
@@ -43,9 +43,11 @@
 
           <!-- =================================================================
                BESTIARY ENTRY TEMPLATE
-               Every cryptid uses this same layout. js/cryptid.js finds the
-               cryptid from ?id= in the URL and fills each data-field="..."
-               slot with that field from js/cryptids.js.
+               Every creature uses this same layout. js/cryptid.js finds the
+               creature from ?id= in the URL (in js/cryptids.js or
+               js/world-cryptids.js) and fills each data-field="..." slot.
+               Short Wikipedia entries hide the data-section="..." parts they
+               have no information for yet.
                ================================================================= -->
           <article id="entry" hidden>
 
@@ -56,13 +58,20 @@
             <section class="section window">
               <div class="window-bar"><h2>At a glance</h2></div>
               <div class="window-body entry-glance">
-                <img class="entry-image" data-field="image" src="" alt="">
-                <dl class="entry-facts">
-                  <div><dt>Region</dt><dd data-field="region"></dd></div>
-                  <div><dt>Culture of origin</dt><dd data-field="culture"></dd></div>
-                  <div><dt>First reported</dt><dd data-field="firstReported"></dd></div>
-                  <div><dt>Evidence strength</dt><dd data-field="evidenceStrength"></dd></div>
-                </dl>
+                <figure class="entry-figure">
+                  <img class="entry-image" data-field="image" src="" alt="">
+                  <figcaption class="entry-credit" data-field="imageCredit" hidden></figcaption>
+                </figure>
+                <div>
+                  <dl class="entry-facts">
+                    <div data-fact="region"><dt>Region</dt><dd data-field="region"></dd></div>
+                    <div data-fact="type"><dt>Type</dt><dd data-field="type"></dd></div>
+                    <div data-fact="culture"><dt>Culture of origin</dt><dd data-field="culture"></dd></div>
+                    <div data-fact="firstReported"><dt>First reported</dt><dd data-field="firstReported"></dd></div>
+                    <div data-fact="evidenceStrength"><dt>Evidence strength</dt><dd data-field="evidenceStrength"></dd></div>
+                  </dl>
+                  <p class="entry-map-link"><a data-field="mapLink" href="map.html">See it on the map →</a></p>
+                </div>
               </div>
             </section>
 
@@ -71,11 +80,15 @@
               <div class="window-bar"><h2>Description</h2></div>
               <div class="window-body">
                 <p data-field="description"></p>
+                <p class="entry-source" data-field="wikiCredit" hidden></p>
+                <p class="entry-note" data-field="shortNote" hidden>
+                  This is a short entry based on Wikipedia. Sightings, explanations and sources haven't been researched yet.
+                </p>
               </div>
             </section>
 
             <!-- ORIGIN & FOLKLORE -->
-            <section class="section window">
+            <section class="section window" data-section="origin">
               <div class="window-bar"><h2>Origin &amp; folklore</h2></div>
               <div class="window-body">
                 <p data-field="origin"></p>
@@ -85,7 +98,7 @@
             </section>
 
             <!-- SIGHTINGS & CLAIMS -->
-            <section class="section window">
+            <section class="section window" data-section="claims">
               <div class="window-bar"><h2>Sightings &amp; claims</h2></div>
               <div class="window-body">
                 <p class="claim-key">
@@ -98,7 +111,7 @@
             </section>
 
             <!-- POSSIBLE EXPLANATIONS -->
-            <section class="section window">
+            <section class="section window" data-section="explanations">
               <div class="window-bar"><h2>Possible explanations</h2></div>
               <div class="window-body">
                 <ul class="entry-list" data-field="explanations"></ul>
@@ -106,7 +119,7 @@
             </section>
 
             <!-- DISCUSSION -->
-            <section class="section window">
+            <section class="section window" data-section="discussion">
               <div class="window-bar"><h2>Discussion</h2></div>
               <div class="window-body">
                 <p>Seen something? Think it's just an owl? Talk it over on the <a data-field="board" href="#"></a> board.</p>
@@ -114,7 +127,7 @@
             </section>
 
             <!-- RELATED GEAR (kept last, so the shop never takes over) -->
-            <section class="section window">
+            <section class="section window" data-section="gear">
               <div class="window-bar"><h2>Related gear</h2></div>
               <div class="window-body">
                 <ul class="product-list" data-field="products"></ul>
@@ -142,6 +155,7 @@
 
   <!-- ===== Java Scripts ===== -->
   <script src="js/cryptids.js"></script>
+  <script src="js/world-cryptids.js"></script>
   <script src="js/cryptid.js"></script>
 
 </body>

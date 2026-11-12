@@ -1,2 +1,6 @@
 # macOS folder settings files
 .DS_Store
+
+# answers saved by tools/build_world_cryptids.py (re-created when it runs)
+tools/.cache/
+__pycache__/

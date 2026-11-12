@@ -27,7 +27,7 @@
       </form>
       <ul class="side-links">
         <li><a href="index.html">Home</a></li>
-        <li><a href="#">Map</a></li>
+        <li><a href="map.html">Map</a></li>
         <li><a class="active" aria-current="page" href="bestiary.html">Bestiary</a></li>
         <li><a href="#">Community</a></li>
         <li><a href="#">Shop</a></li>
@@ -43,13 +43,26 @@
 
           <h1 class="page-title">Bestiary</h1>
 
-          <!-- SEARCH -->
+          <!-- SEARCH AND FILTERS -->
           <section class="section window">
-            <div class="window-bar"><h2>Find a cryptid</h2></div>
+            <div class="window-bar"><h2>Find a creature</h2></div>
             <div class="window-body">
               <form class="filter-bar" role="search" onsubmit="return false">
-                <label for="bestiary-search">Name or place</label>
-                <input id="bestiary-search" type="search" name="q" placeholder="e.g. mothman, Ohio, frog…" autocomplete="off">
+                <label class="filter-field filter-field--wide">Name, country or culture
+                  <input id="bestiary-search" type="search" name="q" placeholder="e.g. mothman, Japan, Basque…" autocomplete="off">
+                </label>
+                <label class="filter-field">Region
+                  <select id="bestiary-area" name="area">
+                    <option value="">Whole world</option>
+                  </select>
+                </label>
+                <label class="filter-field">Kind
+                  <select id="bestiary-kind" name="kind">
+                    <option value="">Cryptids and folklore</option>
+                    <option value="cryptid">Cryptids only</option>
+                    <option value="folklore">Folklore creatures only</option>
+                  </select>
+                </label>
               </form>
               <p id="bestiary-count" class="result-count" aria-live="polite"></p>
               <p id="bestiary-hint" class="search-hint" hidden>
@@ -58,13 +71,13 @@
             </div>
           </section>
 
-          <!-- RESULTS: cards are added by js/bestiary.js from js/cryptids.js -->
+          <!-- RESULTS: cards are added by js/bestiary.js from js/cryptids.js and js/world-cryptids.js -->
           <section class="section window">
-            <div class="window-bar"><h2>All cryptids</h2></div>
+            <div class="window-bar"><h2>All creatures</h2></div>
             <div class="window-body">
               <div id="bestiary-grid" class="bestiary-grid"></div>
               <p id="bestiary-empty" class="empty-state" hidden>
-                No cryptids match that search. Maybe it's still undiscovered…
+                No creatures match that search. Maybe it's still undiscovered…
               </p>
               <noscript><p>Please turn on JavaScript to see the bestiary.</p></noscript>
             </div>
@@ -78,6 +91,7 @@
 
   <!-- ===== Java Scripts ===== -->
   <script src="js/cryptids.js"></script>
+  <script src="js/world-cryptids.js"></script>
   <script src="js/bestiary.js"></script>
 
 </body>

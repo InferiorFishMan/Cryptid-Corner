@@ -4,25 +4,37 @@
    and layout, and only adds what the bestiary needs.
    ===================================================================== */
 
-/* ---------- bestiary list: search bar ---------- */
+/* ---------- bestiary list: search and filters ---------- */
 .filter-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 12px;
-    align-items: center;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px 14px;
+    align-items: end;
 }
-.filter-bar label { font-weight: bold; color: #d9a441; }
-.filter-bar input {
-    flex: 1 1 240px;
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #d9a441;
+}
+.filter-bar input,
+.filter-bar select {
     font: inherit;
-    font-size: 17px;
-    padding: 8px 10px;
+    font-size: 16px;
+    font-weight: normal;
+    padding: 7px 10px;
     border: 1px solid #d9a441;
     border-radius: 6px;
     background-color: #2a1c1c;
     color: #eee;
 }
 .filter-bar input::placeholder { color: #b9a3a3; }
+.filter-bar select:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; }
+@media (max-width: 600px) {
+    .filter-bar { grid-template-columns: 1fr; }
+}
 
 .window-body .result-count { margin: 10px 0 0; font-size: 15px; color: #c9b3b3; }
 .window-body .search-hint  { margin: 6px 0 0; font-size: 15px; }
@@ -49,6 +61,9 @@
 }
 .bestiary-card .bestiary-name   { font-size: 18px; font-weight: bold; text-decoration: none; }
 .bestiary-card .bestiary-region { margin-top: 2px; font-size: 14px; color: #c9b3b3; text-decoration: none; }
+.bestiary-card .kind-tag        { display: inline-block; margin-top: 6px; text-decoration: none; }
+.bestiary-card:hover .kind-tag  { color: #1b1111; }
+.bestiary-card img.is-placeholder { padding: 22%; }   /* "no picture yet" icon, smaller */
 
 /* ---------- entry: title + at a glance ---------- */
 .window-body .entry-aliases {
@@ -62,14 +77,37 @@
     gap: 20px;
     align-items: start;
 }
+.entry-figure { margin: 0; }
 .entry-image {
     display: block;
+    box-sizing: border-box;
     width: 100%;
     aspect-ratio: 1;
     object-fit: contain;
     background-color: #2a1c1c;
     border: 1px solid #d9a441;
     border-radius: 8px;
+}
+.entry-image.is-placeholder { padding: 28%; }
+/* picture credit (artist, licence, source) under Wikipedia pictures */
+.entry-credit {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #c9b3b3;
+    overflow-wrap: anywhere;
+}
+.entry-credit a { color: #d9a441; }
+/* "Description from Wikipedia (CC BY-SA 4.0)" and the short-entry note */
+.window-body .entry-source { margin: 10px 0 0; font-size: 14px; color: #c9b3b3; }
+.window-body .entry-note {
+    margin: 12px 0 0;
+    padding: 8px 12px;
+    border-left: 4px solid #c9a7ff;
+    border-radius: 4px;
+    background-color: #462f2f;
+    font-size: 15px;
+    color: #efd0d0;
 }
 .entry-facts { margin: 0; display: grid; gap: 14px; }
 .entry-facts dt {
@@ -130,6 +168,8 @@
 .claim-list li[data-type="sighting"] { border-left-color: #d9a441; }
 .claim-list li[data-type="evidence"] { border-left-color: #8fd18f; }
 .claim-year { margin: 0 8px; font-weight: bold; color: #fff; }
+
+.window-body .entry-map-link { margin: 14px 0 0; font-size: 16px; }
 
 /* ---------- entry: related gear ---------- */
 .product-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }

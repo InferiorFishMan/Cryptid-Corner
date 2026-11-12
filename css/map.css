@@ -1,0 +1,349 @@
+/* =====================================================================
+   MAP PAGE STYLES (map.html)
+   Loaded after leaflet.css and css/style.css.
+   ===================================================================== */
+
+/* ---------- danger colours (used by the pins, badges, list and key) ---------- */
+[data-danger="1"] { --danger: #8fd18f; --danger-text: #1b1111; }
+[data-danger="2"] { --danger: #e3d36b; --danger-text: #1b1111; }
+[data-danger="3"] { --danger: #f0a03c; --danger-text: #1b1111; }
+[data-danger="4"] { --danger: #e0573a; --danger-text: #1b1111; }
+[data-danger="5"] { --danger: #b3122e; --danger-text: #ffffff; }
+
+/* ---------- filters ---------- */
+.map-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px 16px;
+    align-items: end;
+}
+.map-filters label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #d9a441;
+}
+.map-filters select {
+    font: inherit;
+    font-size: 16px;
+    font-weight: normal;
+    padding: 6px 8px;
+    border: 1px solid #d9a441;
+    border-radius: 6px;
+    background-color: #2a1c1c;
+    color: #eee;
+}
+.map-filters select:focus-visible {
+    outline: 2px solid #d9a441;
+    outline-offset: 2px;
+}
+.map-filters .filter-check {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: normal;
+    color: #efd0d0;
+}
+.filter-check input {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: #d9a441;
+}
+.filter-reset {
+    font: inherit;
+    font-size: 15px;
+    padding: 7px 12px;
+    border: 1px solid #d9a441;
+    border-radius: 6px;
+    background-color: #3a2626;
+    color: #d9a441;
+    cursor: pointer;
+}
+.filter-reset:hover { background-color: #d9a441; color: #2a1c1c; }
+.window-body .map-count { margin: 12px 0 0; font-size: 15px; color: #c9b3b3; }
+.window-body .map-note  { margin: 10px 0 0; font-size: 14px; color: #c9b3b3; }
+
+/* "Show on map" layer switches, across the whole filter grid */
+.filter-layers {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 22px;
+    margin: 0;
+    padding: 6px 12px 10px;
+    border: 1px solid #d9a441;
+    border-radius: 6px;
+}
+.filter-layers legend { padding: 0 6px; font-size: 14px; font-weight: bold; color: #d9a441; }
+.map-filters .filter-layers label {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: normal;
+    color: #efd0d0;
+}
+.filter-layers input { width: 18px; height: 18px; accent-color: #d9a441; }
+
+/* ---------- the framed map ---------- */
+.map-card {
+    margin-bottom: 24px;
+    padding: 6px 14px 10px;
+    background-color: #efe3c8;          /* parchment, so the black line art shows up */
+    border: 1px solid #d9a441;
+    border-radius: 10px;
+    color: #2a1c1c;
+}
+
+/* the two halves of the Nessie border */
+.map-frame-top,
+.map-frame-bottom {
+    position: relative;
+    z-index: 1;                         /* on top of the map... */
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;               /* ...but clicks and drags go straight through to it */
+}
+/* % margins are measured from the width, so the overlap grows and shrinks with the frame */
+.map-frame-top    { margin-bottom: -9%; }   /* the garland hangs over the top edge */
+.map-frame-bottom {                         /* Nessie sits inside the bottom of the map */
+    width: 80%;                             /* a bit smaller than the map, centred */
+    /* the strip is 24.7% of the width tall (80% x 291/943) and her waterline is 76% of the
+       way down it, so pulling it up 18.7% puts the waterline on the map's bottom edge */
+    margin: -18.7% auto 0;
+}
+
+.map-canvas {
+    position: relative;
+    z-index: 0;                         /* keeps Leaflet's layers under the frame and the menu */
+    height: clamp(380px, 65vh, 620px);
+    background-color: #d9cfb6;
+    border: 2px solid #2a1c1c;
+    border-radius: 6px;
+    font-family: inherit;
+}
+.map-canvas .leaflet-tile-pane { filter: sepia(0.45) saturate(0.75); }  /* old-map look */
+.map-canvas--offline {
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    text-align: center;
+    font-size: 17px;
+}
+
+/* zoom buttons in the middle of the left edge, away from the frame artwork */
+.map-canvas .leaflet-top.leaflet-left {
+    top: 50%;
+    transform: translateY(-50%);
+}
+.map-canvas .leaflet-bar a { color: #2a1c1c; }
+.map-show-all svg { vertical-align: -2px; }
+
+/* ---------- sighting pins ---------- */
+.sighting-marker { background: none; border: 0; }
+.sighting-pin {
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: 28px;
+    height: 28px;
+    border: 2px solid #2a1c1c;
+    border-radius: 50%;                 /* circle = community report */
+    background-color: var(--danger);
+    color: var(--danger-text);
+    font: bold 14px/1 Arial, sans-serif;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+.sighting-pin--historical { border-radius: 4px; }   /* square = historical record */
+.sighting-marker:focus { outline: none; }
+.sighting-marker:focus-visible .sighting-pin {
+    outline: 3px solid #2a1c1c;
+    outline-offset: 2px;
+}
+
+/* ---------- country pins (one per country, at its capital) ---------- */
+.country-marker { background: none; border: 0; }
+.country-pin {
+    display: inline-grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #d9a441;
+    border-radius: 6px;
+    background-color: #3a2626;
+    color: #f3d48a;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+.country-marker:focus { outline: none; }
+.country-marker:focus-visible .country-pin {
+    outline: 3px solid #2a1c1c;
+    outline-offset: 2px;
+}
+.legend-item .country-pin { width: 20px; height: 20px; box-shadow: none; }
+
+/* the creatures listed in a country's popup */
+.country-creatures {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+.country-creatures li {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 10px;
+    align-items: start;
+}
+.country-creatures img {
+    box-sizing: border-box;
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border: 1px solid #d9a441;
+    border-radius: 6px;
+    background-color: #2a1c1c;
+}
+.country-creatures img.is-placeholder { object-fit: contain; padding: 6px; }
+.popup .country-creatures .popup-meta { margin: 2px 0 0; }
+
+/* ---------- popups (styled like the site's windows) ---------- */
+.map-canvas .leaflet-popup-content-wrapper,
+.map-canvas .leaflet-popup-tip {
+    background-color: #462f2f;
+    color: #efd0d0;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.5);
+}
+.map-canvas .leaflet-popup-content-wrapper {
+    border: 1px solid #d9a441;
+    border-radius: 8px;
+}
+.map-canvas .leaflet-popup-content {
+    margin: 12px 16px 12px 14px;
+    font-size: 15px;
+    line-height: 1.4;
+}
+.map-canvas a.leaflet-popup-close-button { color: #d9a441; }
+.popup p { margin: 0 0 6px; }
+.popup .popup-top { padding-right: 16px; }          /* room for the close button */
+.popup-creature { font-weight: bold; color: #d9a441; }
+.popup-title { margin: 4px 0 6px; font-size: 18px; color: #fff; }
+.popup .popup-meta { font-size: 13px; color: #c9b3b3; }
+.map-canvas .popup a { font-weight: bold; color: #d9a441; }
+
+/* ---------- key, help and credits under the map ---------- */
+.map-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 14px;
+    margin-top: 6px;
+    font-size: 14px;
+}
+.legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.legend-swatch {
+    display: inline-grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #2a1c1c;
+    border-radius: 50%;
+    background-color: var(--danger);
+    color: var(--danger-text);
+    font: bold 11px/1 Arial, sans-serif;
+}
+.legend-shape {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #2a1c1c;
+    border-radius: 50%;
+    background-color: #fff8e6;
+}
+.legend-shape--square { border-radius: 3px; }
+.map-card .map-help,
+.map-card .map-credit {
+    margin: 8px 0 0;
+    text-align: center;
+    color: #2a1c1c;
+}
+.map-card .map-help   { font-size: 14px; line-height: 1.4; }
+.map-card .map-credit { font-size: 12px; }
+.map-card .map-credit a { color: #6b3d0f; }
+
+/* ---------- list view ---------- */
+.sightings-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+}
+.sighting {
+    padding: 12px 14px;
+    background-color: #462f2f;
+    border-left: 6px solid var(--danger);
+    border-radius: 6px;
+    color: #efd0d0;
+}
+.sighting-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+}
+.danger-badge {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background-color: var(--danger);
+    color: var(--danger-text);
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.source-tag {
+    padding: 0 8px;
+    border: 1px solid #c9b3b3;
+    border-radius: 999px;
+    font-size: 12px;
+    color: #c9b3b3;
+}
+.sighting-date { margin-left: auto; font-size: 14px; font-weight: bold; color: #fff; }
+.sighting-title { margin: 8px 0 2px; font-size: 19px; color: #fff; }
+.sightings-list .sighting-meta { margin: 0 0 6px; font-size: 14px; color: #c9b3b3; }
+.sightings-list .sighting-meta strong { color: #d9a441; }
+.sightings-list .sighting-summary { margin: 0 0 8px; font-size: 16px; line-height: 1.4; color: #efd0d0; }
+.sighting-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+}
+.sighting-actions button {
+    font: inherit;
+    font-size: 14px;
+    padding: 4px 12px;
+    border: 1px solid #d9a441;
+    border-radius: 6px;
+    background-color: #3a2626;
+    color: #d9a441;
+    cursor: pointer;
+}
+.sighting-actions button:hover { background-color: #d9a441; color: #2a1c1c; }
+.sighting-actions a { font-size: 14px; color: #d9a441; }
+.window-body .sightings-empty { margin: 0; text-align: center; }
+
+/* ---------- small screens ---------- */
+@media (max-width: 600px) {
+    .map-card { padding: 4px 8px 8px; }
+    .sighting-date { margin-left: 0; }
+}

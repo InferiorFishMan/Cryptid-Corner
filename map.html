@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sightings Map – Cryptid Corner</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logoCryptidCorner.svg">
+  <!-- Leaflet: free map library (https://leafletjs.com). The "integrity" code makes the
+       browser refuse the file if anyone ever changes it on the server. -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/map.css">
+</head>
+<body>
+
+  <!-- Logo Box (links back home) -->
+  <div class="logo">
+    <a href="index.html"><img src="assets/CryptidCornerLogo.pixel-4bitcrip.png" alt="Cryptid Corner home"></a>
+  </div>
+
+  <div class="layout">
+
+    <!-- ===== SIDEBAR (same on every page) ===== -->
+    <nav class="sidebar window" aria-label="Main menu">
+      <div class="window-bar"><h2>Menu</h2></div>
+      <form class="side-search" action="bestiary.html" method="get" role="search">
+        <label for="site-search" class="visually-hidden">Search cryptids or places</label>
+        <input id="site-search" type="search" name="q" placeholder="Cryptid or place…">
+        <button type="submit">Go</button>
+      </form>
+      <ul class="side-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a class="active" aria-current="page" href="map.html">Map</a></li>
+        <li><a href="bestiary.html">Bestiary</a></li>
+        <li><a href="#">Community</a></li>
+        <li><a href="#">Shop</a></li>
+      </ul>
+      <ul class="side-links side-links--minor">
+        <li><a href="index.html#info">About Us</a></li>
+      </ul>
+    </nav>
+
+    <div class="main-column">
+      <main class="container window">
+        <div class="window-body">
+
+          <h1 class="page-title">Sightings Map</h1>
+
+          <!-- ===== FILTERS (options are filled in by js/map.js) ===== -->
+          <section class="section window">
+            <div class="window-bar"><h2>Filter sightings</h2></div>
+            <div class="window-body">
+              <form id="map-filters" class="map-filters">
+                <fieldset class="filter-layers">
+                  <legend>Show on map</legend>
+                  <label><input id="layer-sightings" name="sightings" type="checkbox" checked> Sightings</label>
+                  <label><input id="layer-countries" name="countries" type="checkbox" checked> Creatures by country (pinned at the capital)</label>
+                </fieldset>
+                <label>Sort by
+                  <select id="filter-sort" name="sort">
+                    <option value="latest">Latest first</option>
+                    <option value="danger">Most dangerous first</option>
+                    <option value="oldest">Oldest first</option>
+                  </select>
+                </label>
+                <label>Creature
+                  <select id="filter-creature" name="creature">
+                    <option value="">All creatures</option>
+                  </select>
+                </label>
+                <label>Region
+                  <select id="filter-area" name="area">
+                    <option value="">Whole world</option>
+                  </select>
+                </label>
+                <label>Danger
+                  <select id="filter-danger" name="danger">
+                    <option value="1">Any danger level</option>
+                    <option value="2">2+ Unsettling or worse</option>
+                    <option value="3">3+ Threatening or worse</option>
+                    <option value="4">4+ Dangerous or worse</option>
+                    <option value="5">5 Extreme only</option>
+                  </select>
+                </label>
+                <label>When
+                  <select id="filter-when" name="when">
+                    <option value="any">Any time</option>
+                    <option value="year">Last 12 months</option>
+                    <option value="since2000">2000 to today</option>
+                    <option value="before2000">Before 2000</option>
+                  </select>
+                </label>
+                <label>Reports
+                  <select id="filter-source" name="source">
+                    <option value="">All reports</option>
+                    <option value="community">Community reports</option>
+                    <option value="historical">Historical records</option>
+                  </select>
+                </label>
+                <label class="filter-check">
+                  <input id="filter-evidence" name="evidence" type="checkbox">
+                  Only with photo, video, tracks or audio
+                </label>
+                <button id="filter-reset" type="button" class="filter-reset">Reset filters</button>
+              </form>
+              <p class="map-note">Region and Creature change both layers. Danger, When, Reports and the evidence box only change the sightings.</p>
+              <p id="map-count" class="map-count" aria-live="polite"></p>
+            </div>
+          </section>
+
+          <!-- ===== THE MAP, framed by the Nessie border =====
+               The two frame pictures come from assets/NessieBorder.svg (split into a top
+               and a bottom strip). They sit on top of the map but let clicks through. -->
+          <div class="map-card">
+            <img class="map-frame-top" src="assets/map-frame-top.webp" alt="" width="943" height="174">
+            <div id="sightings-map" class="map-canvas" role="region"
+                 aria-label="Map of cryptid sightings" aria-describedby="map-help"></div>
+            <img class="map-frame-bottom" src="assets/map-frame-bottom.webp" alt="" width="943" height="291">
+
+            <div class="map-legend" aria-label="Map key">
+              <span class="legend-item"><span class="legend-swatch" data-danger="1">1</span> Harmless</span>
+              <span class="legend-item"><span class="legend-swatch" data-danger="2">2</span> Unsettling</span>
+              <span class="legend-item"><span class="legend-swatch" data-danger="3">3</span> Threatening</span>
+              <span class="legend-item"><span class="legend-swatch" data-danger="4">4</span> Dangerous</span>
+              <span class="legend-item"><span class="legend-swatch" data-danger="5">5</span> Extreme</span>
+              <span class="legend-item"><span class="legend-shape"></span> Community report</span>
+              <span class="legend-item"><span class="legend-shape legend-shape--square"></span> Historical record</span>
+              <span class="legend-item legend-item--countries"><span class="country-pin" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M2 5.5C5 4 8.5 4 11.2 5.6v13.6C8.5 17.6 5 17.6 2 19.1zM22 5.5C19 4 15.5 4 12.8 5.6v13.6c2.7-1.6 6.2-1.6 9.2-.1z" fill="currentColor"/></svg></span> A country's creatures (at its capital)</span>
+            </div>
+            <p id="map-help" class="map-help">
+              Drag to look around. Click the map, then scroll to zoom (or use the + and − buttons, or the arrow keys).
+              Locations are blurred to about 5 km so nobody's home or private land is shown.
+            </p>
+            <p class="map-credit">
+              Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, SRTM ·
+              Map style © <a href="https://opentopomap.org">OpenTopoMap</a>
+              (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>) ·
+              <a href="https://leafletjs.com">Leaflet</a>
+            </p>
+          </div>
+
+          <!-- ===== LIST VIEW: the same sightings as the map, in order ===== -->
+          <section class="section window">
+            <div class="window-bar"><h2>Sightings list</h2></div>
+            <div class="window-body">
+              <ol id="sightings-list" class="sightings-list"></ol>
+              <p id="sightings-empty" class="sightings-empty" hidden>
+                No sightings match these filters. Try removing one.
+              </p>
+              <noscript><p>Please turn on JavaScript to see the sightings.</p></noscript>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+
+  </div>
+
+  <!-- ===== Java Scripts ===== -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="js/cryptids.js"></script>
+  <script src="js/world-cryptids.js"></script>
+  <script src="js/sightings.js"></script>
+  <script src="js/map.js"></script>
+
+</body>
+</html>

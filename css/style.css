@@ -1,6 +1,6 @@
 /* ---------- page ---------- */
 body {
-    background-image: url('../assets/pexels-raulling-34169628.pixel-8bit.png');
+    background-image: url('../assets/background.webp');
     background-color: #787878;
      background-repeat: no-repeat;
     background-attachment: fixed;
@@ -33,10 +33,13 @@ html {
     margin: 20px 0 30px;
 }
 
-.gif-ad img {
+.gif-ad img,
+.gif-ad video {
+    display: block;
     width: 600px;
-    max-width: 90%;
+    max-width: 100%;
 }
+.gif-ad a { max-width: 90%; }
 
 /* sidebar on the left, everything else stacked on the right */
 .layout {
@@ -346,3 +349,19 @@ button:focus-visible {
     clip: rect(0 0 0 0);
     white-space: nowrap;
 }
+
+/* ---------- Cryptid / Folklore tags (bestiary cards, entries and map popups) ---------- */
+.kind-tag {
+    display: inline-block;
+    padding: 0 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+    text-transform: uppercase;
+    vertical-align: 1px;
+    color: #1b1111;
+}
+.kind-tag--cryptid  { background-color: #d9a441; }
+.kind-tag--folklore { background-color: #c9a7ff; }
