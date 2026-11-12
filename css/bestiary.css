@@ -55,6 +55,7 @@
 }
 .bestiary-card:hover { border-color: #fff; }
 .bestiary-card img {
+    box-sizing: border-box;   /* padding (placeholder icon) stays inside the card */
     aspect-ratio: 1;
     object-fit: contain;       /* show the whole creature, no stretching */
     border-radius: 6px;
@@ -118,6 +119,7 @@
     color: #d9a441;
 }
 .entry-facts dd { margin: 2px 0 0; font-size: 18px; color: #efd0d0; }
+.entry-facts dd a { color: #d9a441; }
 
 /* evidence strength boxes */
 .meter { display: inline-flex; gap: 3px; margin-right: 8px; vertical-align: -1px; }

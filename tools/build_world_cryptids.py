@@ -7,11 +7,12 @@ Builds the "world" part of the Cryptid Corner bestiary and map from Wikipedia:
     js/world-cryptids.js     WORLD_COUNTRIES + WORLD_CRYPTIDS (generated - don't edit by hand)
     assets/cryptids/*.webp   small pictures (only freely licensed ones)
 
-For every country it picks up to MAX_PER_COUNTRY of the most viewed Wikipedia
-articles about creatures from that country:
-  1. cryptids first   - Wikipedia's "List of cryptids" and "List of lake monsters"
-  2. then folklore    - the "<Nationality> legendary creatures" categories and the
-                        "List of legendary creatures (A)...(Z)" pages
+For every country it picks up to MAX_PER_COUNTRY creatures, using two kinds of source:
+  - cryptids   from Wikipedia's "List of cryptids" and "List of lake monsters"
+  - folklore   from the "<Nationality> legendary creatures" categories and the
+               "List of legendary creatures (A)...(Z)" pages
+The country's best-known cryptid comes first (if it has one), then the best-known
+creatures of any kind (fame = Wikipedia page views over the last 60 days).
 Each country is pinned at its capital on the map.
 
 HOW TO RUN
@@ -74,6 +75,10 @@ UK_NATIONS = {"England": "London", "Scotland": "Edinburgh", "Wales": "Cardiff", 
 # Indigenous spiritual traditions and were left out of the sightings map for the same reason.
 EXCLUDE = {
     "Wendigo", "Skin-walker", "Skinwalker",
+    "Jinn",                                                   # part of Islamic belief
+    "Ded Moroz", "Koshchei", "Zahhak", "Lemminkäinen",        # legendary people/figures, not creatures
+    "Ifrit",                                                  # a class of jinn
+    "Naga fireball",                                          # a light phenomenon, not a creature
 }
 
 # Culture labels that are religions, books or whole continents rather than one country.
@@ -88,6 +93,13 @@ SKIP_CULTURES = {
     "central asian", "arctic", "romani", "latin american", "south american", "mesoamerican",
     "middle eastern", "near eastern", "himalayan", "asian", "oceanian", "vodou", "voodoo",
     "kabbalah", "occult", "christian demonology", "demonology", "cryptozoology", "urban legend",
+}
+
+# Labels that mean the entry belongs to a religion's beliefs: such entries are skipped.
+RELIGIOUS_CULTURES = {
+    "christian", "christianity", "biblical", "jewish", "hebrew", "islamic", "islam", "islamic belief",
+    "hindu", "hinduism", "buddhist", "buddhism", "jain", "jainism", "zoroastrian", "zoroastrianism",
+    "judeo-christian", "abrahamic", "yazidi", "sanamahism", "vodou", "voodoo", "kabbalah",
 }
 
 # Culture / nationality label (lower case) -> country. Used for the folklore lists and categories.
@@ -248,16 +260,25 @@ NOT_A_CREATURE = re.compile(
     r"\b(gods?|goddess(es)?|deit(y|ies)|divinit(y|ies)|demigods?|worship(ped)?|king|queen|hero(ine)?|"
     r"princes?s?|saints?|prophet|emperor|warrior|chieftain|film|novel|album|song|video game|television|"
     r"tv series|episode|manga|anime|magazine|surname|given name|company|opera|ballet|painting|sculpture|"
-    r"disambiguation)\b", re.I)
+    r"disambiguation|wizard|sorcer(er|ess)|magician|plasma|organism|polyphyletic|overview|holiday character)\b",
+    re.I)
+# Articles about a whole topic rather than one creature.
+TOPIC_TITLE = re.compile(r"(\b(folklore|mythology|mythologies|religion|legends|beliefs|traditions)$)|"
+                         r"\bconception of\b|^(cultural )?depictions of\b", re.I)
+# Place words only count when the article is about the place itself ("Lake in Alaska"),
+# not a creature living there ("Lake monster in Swedish folklore", "Mountain spirit from ...").
 NOT_A_CREATURE_START = re.compile(
-    r"^(village|town|city|municipality|district|mountain|island|lake|river|county|region|province|commune|"
-    r"ship|aircraft|genus|species|family|book|play|poem|comic|website|podcast|band)\b", re.I)
+    r"^((village|town|city|municipality|district|mountain|island|lake|river|county|region|province|commune)"
+    r"\s+(in|of|on|near|located)\b|(ship|aircraft|genus|species|family|book|play|poem|comic|website|podcast|band)\b)",
+    re.I)
 # For category members (which can be any topic), the short description must sound like a creature.
 CREATURE_WORDS = re.compile(
     r"\b(creature|monster|beast|being|spirit|demon|ghost|serpent|dragon|giant|fairy|fairies|y[oō]kai|"
-    r"humanoid|animal|bird|fish|snake|dog|hound|cat|horse|wolf|ape|entity|mermaids?|vampire|ogre|troll|"
-    r"goblin|elf|elves|dwarf|ghoul|undead|cryptid|hybrid|chimera|bogeyman|shapeshifter|werewolf|ghosts?|"
-    r"lizard|reptile|turtle|eel|worm|bat|bear|bull|boar|deer|goat|lion|tiger|whale|octopus|squid|crab|monkey)\b",
+    r"humanoid|animal|bird|fish|snake|dog|hound|cat|horse|wolf|wolves|ape|entity|entities|mermaid|vampire|ogre|"
+    r"troll|goblin|elf|elves|dwarf|ghoul|undead|cryptid|hybrid|chimera|bogeyman|shapeshifter|werewolf|"
+    r"lizard|reptile|turtle|eel|worm|bat|bear|bull|boar|deer|goat|lion|tiger|whale|octopus|squid|crab|"
+    r"monkey|frog|toad|kangaroo|panther|puma|cougar|lynx|otter|seal|shark|dinosaur|pterosaur|plesiosaur|"
+    r"hominid|hominin|primate|mammal|insect|spider|feline|stegosaurid|sauropod)(s|es)?\b",
     re.I)
 
 
@@ -551,12 +572,15 @@ def resolve_country(name, countries):
 
 def culture_countries(label, countries):
     """'Basque mythology' -> {'Spain'}; 'Armenian and Persian' -> {'Armenia', 'Iran'}.
-    Returns (countries, cleaned labels that could not be placed)."""
-    found, unplaced = set(), []
+    Returns (countries, cleaned labels that could not be placed, is it a religious label?)."""
+    found, unplaced, religious = set(), [], False
     for part in re.split(r",|/|;|\band\b|\bor\b", label):
         key = re.sub(r"\b(mythology|folklore|legends?|people|peoples|religion|tradition|culture|tribe|nation|ethnic group)\b",
                      "", part.lower())
         key = re.sub(r"[()\[\]]", "", key).strip(" -.")
+        if key in RELIGIOUS_CULTURES:
+            religious = True
+            continue
         if not key or key in SKIP_CULTURES:
             continue
         country = resolve_country(CULTURE_TO_COUNTRY.get(key) or key.title(), countries)
@@ -564,20 +588,36 @@ def culture_countries(label, countries):
             found.add(country)
         else:
             unplaced.append(key)
-    return found, unplaced
+    return found, unplaced, religious
 
 
 # =====================================================================
 # 2. CANDIDATES
 # =====================================================================
 
-def new_candidate(candidates, title, kind, countries, culture=None, ctype=None, aliases=(), curated=True):
-    """curated=False for category members: they must also *sound* like a creature to be kept."""
-    if not countries or title in EXCLUDE:
+def same_name(label, target):
+    """Is a list's link label the same creature as the article it links to?
+    'Abada' -> 'Abada (unicorn)' yes; 'Kaw kaw' -> 'Maltese folklore' no."""
+    if not label:
+        return True
+    def norm(text):
+        text = unicodedata.normalize("NFKD", plain(text)).encode("ascii", "ignore").decode().lower()
+        return re.sub(r"[^a-z0-9]", "", text)
+    a, b = norm(label), norm(display_name(target))
+    return not a or not b or a in b or b in a
+
+
+def new_candidate(candidates, title, kind, countries, culture=None, ctype=None, aliases=(), curated=True,
+                  direct_link=True, religious=False):
+    """curated=False (cryptid lists, category members): the article's short description must also
+    *sound* like a creature, because these sources sometimes link to a lake or a general topic."""
+    if not countries:
         return
-    c = candidates.setdefault(title, {"kind": kind, "countries": set(), "culture": culture,
-                                      "type": ctype, "aliases": set(), "curated": False})
+    c = candidates.setdefault(title, {"kind": kind, "countries": set(), "culture": culture, "type": ctype,
+                                      "aliases": set(), "curated": False, "direct": False, "religious": False})
     c["curated"] = c["curated"] or curated
+    c["direct"] = c["direct"] or direct_link        # at least one source links straight to it
+    c["religious"] = c["religious"] or religious
     c["countries"] |= set(countries)
     c["aliases"] |= {a for a in aliases if a}
     if kind == "cryptid":             # a cryptid list beats a folklore list
@@ -599,7 +639,8 @@ def cryptid_candidates(candidates, lookup, countries, review):
             found = countries_in(row[3]["text"], lookup, countries)
             review.append(f"   {title:<34} {row[3]['text'][:45]:<46} -> {', '.join(sorted(found)) or '(no country)'}")
             aliases = [a.strip() for a in re.split(r",|;| or ", row[1]["text"]) if a.strip()]
-            new_candidate(candidates, title, "cryptid", found, ctype=types.get(table["h3"], "Cryptid"), aliases=aliases)
+            new_candidate(candidates, title, "cryptid", found, ctype=types.get(table["h3"], "Cryptid"),
+                          aliases=aliases, curated=False)
     for table in page_tables("List of lake monsters"):
         for row in table["rows"]:
             if len(row) != 8 or not row[4]["links"] or row[0]["text"] == "Body of water":
@@ -608,7 +649,7 @@ def cryptid_candidates(candidates, lookup, countries, review):
             if "#" in title:
                 continue
             found = countries_in(row[2]["text"], lookup, countries)
-            new_candidate(candidates, title, "cryptid", found, ctype="Lake monster")
+            new_candidate(candidates, title, "cryptid", found, ctype="Lake monster", curated=False)
     print(f"   {len(candidates) - before} cryptids placed in a country")
 
 
@@ -637,7 +678,7 @@ def folklore_category_candidates(candidates, countries, unplaced):
         frontier = nxt
 
     for category, nationality in sorted(national.items()):
-        found, missing = culture_countries(nationality, countries)
+        found, missing, _ = culture_countries(nationality, countries)
         unplaced.update(missing)
         if not found:
             continue
@@ -661,20 +702,21 @@ def folklore_list_candidates(candidates, countries, unplaced):
     pages = sorted({l["title"] for l in links if l["title"].startswith("List of legendary creatures (")})
     # "# [[Target|Label]] ([[Culture link|Culture]]) – description"
     line_pattern = re.compile(
-        r"^#\s*'*\[\[([^\]|#]+)(#[^\]|]*)?(?:\|[^\]]*)?\]\]'*\s*"
+        r"^#\s*'*\[\[([^\]|#]+)(#[^\]|]*)?(?:\|([^\]]*))?\]\]'*\s*"
         r"\(((?:\[\[[^\]]*\]\]|[^()\[\]])+)\)\s*[–—-]\s*(.*)$", re.M)
     gods = re.compile(r"\b(gods?|goddess(es)?|deit(y|ies))\b", re.I)
     for page in pages:
         wikitext = api(action="parse", page=page, prop="wikitext")["parse"]["wikitext"]
-        for target, fragment, culture_markup, description in line_pattern.findall(wikitext):
+        for target, fragment, label, culture_markup, description in line_pattern.findall(wikitext):
             if fragment or gods.search(description):
                 continue   # only a section of another article, or a god rather than a creature
             culture = plain(culture_markup)
-            found, missing = culture_countries(culture, countries)
-            for label in missing:
-                unplaced[label] += 1
+            found, missing, religious = culture_countries(culture, countries)
+            for unknown in missing:
+                unplaced[unknown] += 1
             if found:
-                new_candidate(candidates, target.strip(), "folklore", found, culture=culture, ctype="Folklore creature")
+                new_candidate(candidates, target.strip(), "folklore", found, culture=culture, ctype="Folklore creature",
+                              direct_link=same_name(label, target), religious=religious)
     print(f"   {len(pages)} list pages, {len(candidates) - before} new candidates")
 
 
@@ -693,8 +735,17 @@ def check_and_rank(candidates, skipped):
             continue
         name = page["title"]
         description = page.get("description", "")
-        if name in EXCLUDE or name.startswith(("List of", "Lists of")):
+        if name in EXCLUDE or title in EXCLUDE or name.startswith(("List of", "Lists of")):
             skipped["excluded or list page"].append(name)
+            continue
+        if TOPIC_TITLE.search(name):
+            skipped["about a whole topic, not one creature"].append(name)
+            continue
+        if c["religious"]:
+            skipped["part of a religion's beliefs"].append(name)
+            continue
+        if not c["direct"]:
+            skipped["list links to a broader article"].append(f"{title}")
             continue
         if "disambiguation" in page.get("pageprops", {}):
             skipped["disambiguation page"].append(name)
@@ -719,16 +770,20 @@ def check_and_rank(candidates, skipped):
 
 
 def pick(merged, countries, buffer=2):
-    """Best candidates per country: cryptids first, then most viewed. Returns {country: [titles]}
-    with a few spare titles per country in case some have no usable summary."""
+    """Per country: its best-known cryptid first (if it has one), then the best-known creatures
+    of any kind. A creature listed for several countries counts proportionally less in each, so
+    it doesn't crowd out a country's own creatures. Returns {country: [titles]} with a few spare
+    titles per country in case some have no usable summary."""
     per_country = defaultdict(list)
     for title, m in merged.items():
         for country in m["countries"]:
             per_country[country].append(title)
+    fame = {t: m["views"] / max(1, len(m["countries"])) for t, m in merged.items()}
     ranked = {}
     for country, titles in per_country.items():
-        titles.sort(key=lambda t: (merged[t]["kind"] != "cryptid", -merged[t]["views"], t))
-        ranked[country] = titles[:MAX_PER_COUNTRY + buffer]
+        by_fame = sorted(titles, key=lambda t: (-fame[t], t))
+        best_cryptid = [t for t in by_fame if merged[t]["kind"] == "cryptid"][:1]
+        ranked[country] = (best_cryptid + [t for t in by_fame if t not in best_cryptid])[:MAX_PER_COUNTRY + buffer]
     return ranked
 
 
@@ -736,14 +791,29 @@ def pick(merged, countries, buffer=2):
 # 6-7. SUMMARIES AND PICTURES
 # =====================================================================
 
+# Characters outside the Latin alphabet (native spellings, pronunciation symbols).
+NOT_LATIN = re.compile(r"[^\u0000-\u024F\u1E00-\u1EFF\u2000-\u206F]")
+
+
+def tidy_brackets(match):
+    """'(狐, きつね; IPA: [kʲitsɨne]; lit. 'fox')' -> "(lit. 'fox')"; drops the bracket if nothing is left."""
+    parts = [part.strip() for part in re.split(r"[;,]", match.group(1))]
+    keep = [part for part in parts if part and not NOT_LATIN.search(part)
+            and "IPA" not in part and "/" not in part and not re.fullmatch(r"[\w\s]+:", part)]
+    return f" ({'; '.join(keep)})" if keep else ""
+
+
 def clean_summary(text):
-    text = re.sub(r"\s*\([^()]*?/[^()]*?\)", "", text)        # pronunciation guides like (/ˈjɛti/)
+    text = re.sub(r"\s*\(((?:[^()]|\([^()]*\))*)\)", tidy_brackets, text)   # native spellings, IPA
     text = re.sub(r"\(\s*[;,]?\s*\)", "", text)
+    text = re.sub(r"\s+", " ", text).strip()                  # line breaks too, so sentence ends are found
     text = re.sub(r"\s+([,.;])", r"\1", text)
-    text = re.sub(r"\s{2,}", " ", text).strip()
     if len(text) > 520:                                      # keep it short: cut at a sentence end
         cut = text.rfind(". ", 0, 520)
-        text = text[:cut + 1] if cut > 200 else text[:517].rstrip() + "..."
+        if cut < 120:                                        # one very long first sentence: finish it
+            later = text.find(". ", 520)
+            cut = later if 0 < later < 800 else -1
+        text = text[:cut + 1] if cut > 0 else text[:517].rsplit(" ", 1)[0] + "…"
     return text
 
 
@@ -891,8 +961,8 @@ def main():
         "   Re-run that tool to update it (see the instructions at the top of the tool).",
         "",
         "   WORLD_COUNTRIES  country -> capital, coordinates, continent, creature ids",
-        "   WORLD_CRYPTIDS   up to " + str(MAX_PER_COUNTRY) + " creatures per country: cryptids first, then folklore,",
-        "                    most viewed on Wikipedia first",
+        "   WORLD_CRYPTIDS   up to " + str(MAX_PER_COUNTRY) + " creatures per country: its best-known cryptid (if any),",
+        "                    then the best-known creatures of any kind (Wikipedia page views)",
         "",
         "   Summaries are from Wikipedia (CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/).",
         "   Pictures are freely licensed; each one lists its artist, licence and source.",
@@ -919,6 +989,10 @@ def main():
         str(sum(1 for v in world_countries.values() if len(v['creatures']) == n)) for n in (1, 2, 3)))
     print(f"\nWritten: {OUT_JS.relative_to(ROOT)} ({OUT_JS.stat().st_size // 1024} KB) and "
           f"{len(used)} pictures in {IMG_DIR.relative_to(ROOT)}/")
+    print("\nPicked per country (check these look right):")
+    names = {e["id"]: e["name"] + ("" if e["kind"] == "folklore" else " [cryptid]") for e in entries}
+    for country, info in world_countries.items():
+        print(f"   {country}: " + ", ".join(names[i] for i in info["creatures"]))
     print("\nCryptid list locations (check these look right):")
     print("\n".join(review))
     print("\nCulture labels that couldn't be placed in a country (add them to CULTURE_TO_COUNTRY):")
